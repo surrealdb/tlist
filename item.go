@@ -21,21 +21,6 @@ type Item struct {
 	next *Item
 }
 
-func (i *Item) Del() {
-	if i.prev != nil && i.next != nil {
-		i.prev.next = i.next
-		i.next.prev = i.prev
-		i.prev = nil
-		i.next = nil
-	} else if i.prev != nil {
-		i.prev.next = nil
-		i.prev = nil
-	} else if i.next != nil {
-		i.next.prev = nil
-		i.next = nil
-	}
-}
-
 func (i *Item) Ver() int64 {
 	return i.ver
 }
