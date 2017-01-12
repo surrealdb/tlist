@@ -14,18 +14,23 @@
 
 package tlist
 
+// List represents a time-series list.
 type List struct {
 	size int
 	min  *Item
 	max  *Item
 }
 
+// Get gets a specific item from the list. If the exact item does not
+// exist in the list, then a nil value is returned.
 func (l *List) Get(ver int64) *Item {
 
 	return l.find(ver, true)
 
 }
 
+// Del deletes a specific item from the list, returning the previous item
+// if it existed. If it did not exist, a nil value is returned.
 func (l *List) Del(ver int64) *Item {
 
 	i := l.find(ver, true)
@@ -49,6 +54,9 @@ func (l *List) Del(ver int64) *Item {
 
 }
 
+// Put inserts a new item into the list, ensuring that the list is sorted
+// after insertion. If an item with the same version already exists in the
+// list, then the value is updated.
 func (l *List) Put(ver int64, val []byte) {
 
 	// If the exact version item already
@@ -102,27 +110,39 @@ func (l *List) Put(ver int64, val []byte) {
 
 }
 
+// Len returns the total number of items in the list.
 func (l *List) Len() int {
 	return l.size
 }
 
+// Min returns the first item in the list. In a time-series list this can be
+// used to get the initial version.
 func (l *List) Min() *Item {
 	return l.min
 }
 
+// Max returns the last item in the list. In a time-series list this can be
+// used to get the latest version.
 func (l *List) Max() *Item {
 	return l.max
 }
 
+// Seek returns the nearest item in the list, where theversion number is
+// less than the given version. In a time-series list, this can be used to
+// get the version that was valid at the specified time.
 func (l *List) Seek(ver int64) *Item {
 	return l.find(ver, false)
 }
 
+// Walk iterates over the list starting at the first version, and continuing
+// until the walk function returns true.
 func (l *List) Walk(fn func(*Item) bool) {
 	for i := l.min; !fn(i); i = i.next {
 		continue
 	}
 }
+
+// ---------------------------------------------------------------------------
 
 func (l *List) find(ver int64, exact bool) *Item {
 

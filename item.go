@@ -14,6 +14,7 @@
 
 package tlist
 
+// List represents an item in a time-series list.
 type Item struct {
 	ver  int64
 	val  []byte
@@ -21,10 +22,12 @@ type Item struct {
 	next *Item
 }
 
+// Ver returns the version of this item in the containing list.
 func (i *Item) Ver() int64 {
 	return i.ver
 }
 
+// Val returns the value of this item in the containing list.
 func (i *Item) Val() []byte {
 	return i.val
 }
