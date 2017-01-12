@@ -14,7 +14,7 @@
 
 package tlist
 
-// List represents an item in a time-series list.
+// Item represents an item in a time-series list.
 type Item struct {
 	ver  int64
 	val  []byte
