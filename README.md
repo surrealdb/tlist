@@ -13,8 +13,8 @@ Tlist is an in-memory time series list package for Golang.
 - Ability to insert items at any position in the list
 - Find exact versions or seek to the closest version
 - Select items by version number or retrieve latest value
-- Less efficient than a btree when seeking for a specific version: O(n)
-- Efficient when majority of selects are for the initial or latest version: O(1)
+- Less efficient than a btree when seeking for a specific version: O(n) worst case
+- Efficient when majority of selects are for the initial or latest version: O(1) worst case
 
 #### Installation
 
