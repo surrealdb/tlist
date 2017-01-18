@@ -14,7 +14,7 @@
 
 package tlist
 
-// List represents a time-series list.
+// List represents a doubly-linked time-series list.
 type List struct {
 	size int
 	min  *Item
@@ -29,6 +29,7 @@ const (
 	nearest
 )
 
+// NewList creates a new list
 func NewList() *List {
 	return &List{}
 }
