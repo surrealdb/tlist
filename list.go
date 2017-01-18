@@ -151,6 +151,30 @@ func (l *List) Del(ver int64, meth Find) *Item {
 
 }
 
+// Exp expires all items in the list, upto and including the specified
+// version, returning the latest version, or a nil value if not found.
+func (l *List) Exp(ver int64, meth Find) *Item {
+
+	i := l.find(ver, meth)
+
+	if i != nil {
+
+		for now := i; now != nil; now = now.prev {
+			l.size--
+		}
+
+		if i.next != nil {
+			i.next.prev = nil
+			l.min = i.next
+			i.next = nil
+		}
+
+	}
+
+	return i
+
+}
+
 // Get gets a specific item from the list. If the exact item does not
 // exist in the list, then a nil value is returned.
 func (l *List) Get(ver int64, meth Find) *Item {
