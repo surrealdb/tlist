@@ -53,7 +53,7 @@ func NewList() *List {
 // Put inserts a new item into the list, ensuring that the list is sorted
 // after insertion. If an item with the same version already exists in the
 // list, then the value is updated.
-func (l *List) Put(ver int64, val []byte) {
+func (l *List) Put(ver int64, val []byte) *Item {
 
 	// If there is no min or max for
 	// this list, then we can just add
@@ -63,7 +63,7 @@ func (l *List) Put(ver int64, val []byte) {
 		i := &Item{ver: ver, val: val}
 		l.min, l.max = i, i
 		l.size++
-		return
+		return i
 	}
 
 	// Otherwise find the nearest item
@@ -74,7 +74,7 @@ func (l *List) Put(ver int64, val []byte) {
 
 	if f.ver == ver {
 		f.val = val
-		return
+		return f
 	}
 
 	// If the found item version is not
@@ -116,7 +116,7 @@ func (l *List) Put(ver int64, val []byte) {
 
 	l.size++
 
-	return
+	return i
 
 }
 
