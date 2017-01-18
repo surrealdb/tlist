@@ -21,12 +21,28 @@ type List struct {
 	max  *Item
 }
 
+type Find int8
+
 const (
-	upto int8 = iota
-	prev
-	next
-	exact
-	nearest
+	// Exact returns an item at a specific version from the list. If the exact
+	// item does not exist in the list, then a nil value is returned.
+	Exact Find = iota
+	// Prev returns the nearest item in the list, where the version number is
+	// less than the given version. In a time-series list, this can be used
+	// to get the version that was valid before a specified time.
+	Prev
+	// Next returns the nearest item in the list, where the version number is
+	// greater than the given version. In a time-series list, this can be used
+	// to get the version that was changed after a specified time.
+	Next
+	// Upto returns the nearest item in the list, where the version number is
+	// less than or equal to the given version. In a time-series list, this can
+	// be used to get the version that was current at the specified time.
+	Upto
+	// Nearest returns an item nearest a specific version in the list. If there
+	// is a previous version to the given version, then it will be returned,
+	// otherwise it will return the next available version.
+	Nearest
 )
 
 // NewList creates a new list
@@ -54,7 +70,7 @@ func (l *List) Put(ver int64, val []byte) {
 	// to this version so we can update
 	// it or prepend / append to it.
 
-	f := l.find(ver, nearest)
+	f := l.find(ver, Nearest)
 
 	if f.ver == ver {
 		f.val = val
@@ -106,9 +122,9 @@ func (l *List) Put(ver int64, val []byte) {
 
 // Del deletes a specific item from the list, returning the previous item
 // if it existed. If it did not exist, a nil value is returned.
-func (l *List) Del(ver int64) *Item {
+func (l *List) Del(ver int64, meth Find) *Item {
 
-	i := l.find(ver, exact)
+	i := l.find(ver, meth)
 
 	if i != nil {
 
@@ -137,8 +153,8 @@ func (l *List) Del(ver int64) *Item {
 
 // Get gets a specific item from the list. If the exact item does not
 // exist in the list, then a nil value is returned.
-func (l *List) Get(ver int64) *Item {
-	return l.find(ver, exact)
+func (l *List) Get(ver int64, meth Find) *Item {
+	return l.find(ver, meth)
 }
 
 // Len returns the total number of items in the list.
@@ -158,27 +174,6 @@ func (l *List) Max() *Item {
 	return l.max
 }
 
-// Prev returns the nearest item in the list, where the version number is
-// less than the given version. In a time-series list, this can be used
-// to get the version that was valid before a specified time.
-func (l *List) Prev(ver int64) *Item {
-	return l.find(ver, prev)
-}
-
-// Next returns the nearest item in the list, where the version number is
-// greater than the given version. In a time-series list, this can be used
-// to get the version that was changed after a specified time.
-func (l *List) Next(ver int64) *Item {
-	return l.find(ver, next)
-}
-
-// Upto returns the nearest item in the list, where the version number is
-// less than or equal to the given version. In a time-series list, this can
-// be used to get the version that was current at the specified time.
-func (l *List) Upto(ver int64) *Item {
-	return l.find(ver, upto)
-}
-
 // Walk iterates over the list starting at the first version, and continuing
 // until the walk function returns true.
 func (l *List) Walk(fn func(*Item) bool) {
@@ -189,7 +184,7 @@ func (l *List) Walk(fn func(*Item) bool) {
 
 // ---------------------------------------------------------------------------
 
-func (l *List) find(ver int64, what int8) (i *Item) {
+func (l *List) find(ver int64, what Find) (i *Item) {
 
 	if l.min == nil && l.max == nil {
 		return nil
@@ -197,19 +192,19 @@ func (l *List) find(ver int64, what int8) (i *Item) {
 
 	switch what {
 
-	case prev: // Get the item below the specified version
+	case Prev: // Get the item below the specified version
 
-		if i = l.find(ver, upto); i != nil {
+		if i = l.find(ver, Upto); i != nil {
 			return i.prev
 		}
 
-	case next: // Get the item above the specified version
+	case Next: // Get the item above the specified version
 
-		if i = l.find(ver, upto); i != nil {
+		if i = l.find(ver, Upto); i != nil {
 			return i.next
 		}
 
-	case upto: // Get the item up to the specified version
+	case Upto: // Get the item up to the specified version
 
 		if l.min.ver <= ver {
 			for i = l.min; i != nil && i.next != nil && i.ver < ver; i = i.next {
@@ -218,7 +213,7 @@ func (l *List) find(ver int64, what int8) (i *Item) {
 			return i
 		}
 
-	case exact: // Get the exact specified version
+	case Exact: // Get the exact specified version
 
 		for i = l.min; i != nil && i.ver <= ver; i = i.next {
 			if i.ver == ver {
@@ -226,7 +221,7 @@ func (l *List) find(ver int64, what int8) (i *Item) {
 			}
 		}
 
-	case nearest: // Get the item nearest the specified version
+	case Nearest: // Get the item nearest the specified version
 
 		for i = l.min; i != nil; i = i.next {
 			if i.ver == ver || i.next == nil || i.next.ver > ver {
