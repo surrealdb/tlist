@@ -21,6 +21,7 @@ type List struct {
 	max  *Item
 }
 
+// Find determines which method is used to seek items in the list.
 type Find int8
 
 const (
