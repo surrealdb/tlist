@@ -61,7 +61,7 @@ func (l *List) Put(ver int64, val []byte) *Item {
 	// this item as the min and max.
 
 	if l.min == nil && l.max == nil {
-		i := &Item{ver: ver, val: val}
+		i := &Item{ver: ver, val: val, list: l}
 		l.min, l.max = i, i
 		l.size++
 		return i
@@ -82,7 +82,7 @@ func (l *List) Put(ver int64, val []byte) *Item {
 	// the same version as the one we
 	// updating then create a new item.
 
-	i := &Item{ver: ver, val: val}
+	i := &Item{ver: ver, val: val, list: l}
 
 	if f.ver < ver {
 		if f.next != nil {
@@ -143,6 +143,8 @@ func (l *List) Del(ver int64, meth Find) *Item {
 			l.min = i.next
 			i.next = nil
 		}
+
+		i.list = nil
 
 		l.size--
 

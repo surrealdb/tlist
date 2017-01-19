@@ -18,6 +18,7 @@ package tlist
 type Item struct {
 	ver  int64
 	val  []byte
+	list *List
 	prev *Item
 	next *Item
 }
@@ -30,4 +31,34 @@ func (i *Item) Ver() int64 {
 // Val returns the value of this item in the containing list.
 func (i *Item) Val() []byte {
 	return i.val
+}
+
+// Del deletes the item from any containing list and returns it.
+func (i *Item) Del() *Item {
+
+	if i.list != nil {
+
+		if i.prev != nil && i.next != nil {
+			i.prev.next = i.next
+			i.next.prev = i.prev
+			i.prev = nil
+			i.next = nil
+		} else if i.prev != nil {
+			i.list.max = i.prev
+			i.prev.next = nil
+			i.prev = nil
+		} else if i.next != nil {
+			i.list.min = i.next
+			i.next.prev = nil
+			i.next = nil
+		}
+
+		i.list.size--
+
+		i.list = nil
+
+	}
+
+	return i
+
 }
