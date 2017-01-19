@@ -152,7 +152,7 @@ func (l *List) Del(ver int64, meth Find) *Item {
 
 }
 
-// Exp expires all items in the list, upto and including the specified
+// Exp expunges all items in the list, upto and including the specified
 // version, returning the latest version, or a nil value if not found.
 func (l *List) Exp(ver int64, meth Find) *Item {
 
