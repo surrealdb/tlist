@@ -51,6 +51,13 @@ func NewList() *List {
 	return &List{}
 }
 
+// Clr clears all of the items from the list.
+func (l *List) Clr() {
+	l.size = 0
+	l.min = nil
+	l.max = nil
+}
+
 // Put inserts a new item into the list, ensuring that the list is sorted
 // after insertion. If an item with the same version already exists in the
 // list, then the value is updated.
