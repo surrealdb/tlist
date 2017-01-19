@@ -286,4 +286,26 @@ func TestMain(t *testing.T) {
 		So(items[1], ShouldEqual, l.Get(4, Exact))
 	})
 
+	// ----------------------------------------
+	// ----------------------------------------
+	// ----------------------------------------
+
+	Convey("------------------------------", t, nil)
+
+	Convey("Can insert some items", t, func() {
+		l.Put(1, []byte{1})
+		l.Put(2, []byte{2})
+		l.Put(3, []byte{3})
+		l.Put(4, []byte{4})
+		l.Put(5, []byte{5})
+		So(l.Len(), ShouldEqual, 5)
+	})
+
+	Convey("Can expire upto 3rd item", t, func() {
+		i = l.Exp(3, Exact)
+		So(l.Len(), ShouldEqual, 2)
+		So(i.Ver(), ShouldEqual, 3)
+		So(i.Val(), ShouldResemble, []byte{3})
+	})
+
 }
