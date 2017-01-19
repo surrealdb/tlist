@@ -308,4 +308,48 @@ func TestMain(t *testing.T) {
 		So(i.Val(), ShouldResemble, []byte{3})
 	})
 
+	// ----------------------------------------
+	// ----------------------------------------
+	// ----------------------------------------
+
+	Convey("------------------------------", t, nil)
+
+	Convey("Can clear the list", t, func() {
+		l.Clr()
+		So(l.Len(), ShouldEqual, 0)
+	})
+
+	// ----------------------------------------
+	// ----------------------------------------
+	// ----------------------------------------
+
+	Convey("------------------------------", t, nil)
+
+	Convey("Can insert some items", t, func() {
+		l.Put(1, []byte{1})
+		l.Put(2, []byte{2})
+		l.Put(3, []byte{3})
+		l.Put(4, []byte{4})
+		l.Put(5, []byte{5})
+		So(l.Len(), ShouldEqual, 5)
+	})
+
+	Convey("Can self delete 3rd item", t, func() {
+		i = l.Get(3, Exact)
+		So(i.Del(), ShouldEqual, i)
+		So(l.Len(), ShouldEqual, 4)
+	})
+
+	Convey("Can self delete 1st item", t, func() {
+		i = l.Get(1, Exact)
+		So(i.Del(), ShouldEqual, i)
+		So(l.Len(), ShouldEqual, 3)
+	})
+
+	Convey("Can self delete 5th item", t, func() {
+		i = l.Get(5, Exact)
+		So(i.Del(), ShouldEqual, i)
+		So(l.Len(), ShouldEqual, 2)
+	})
+
 }
