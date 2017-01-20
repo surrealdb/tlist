@@ -38,6 +38,9 @@ func (i *Item) Del() *Item {
 
 	if i.list != nil {
 
+		i.list.lock.Lock()
+		defer i.list.lock.Unlock()
+
 		if i.prev != nil && i.next != nil {
 			i.prev.next = i.next
 			i.next.prev = i.prev

@@ -14,11 +14,14 @@
 
 package tlist
 
+import "sync"
+
 // List represents a doubly-linked time-series list.
 type List struct {
 	size int
 	min  *Item
 	max  *Item
+	lock sync.RWMutex
 }
 
 // Find determines which method is used to seek items in the list.
@@ -53,15 +56,23 @@ func NewList() *List {
 
 // Clr clears all of the items from the list.
 func (l *List) Clr() {
+
+	l.lock.Lock()
+	defer l.lock.Unlock()
+
 	l.size = 0
 	l.min = nil
 	l.max = nil
+
 }
 
 // Put inserts a new item into the list, ensuring that the list is sorted
 // after insertion. If an item with the same version already exists in the
 // list, then the value is updated.
 func (l *List) Put(ver int64, val []byte) *Item {
+
+	l.lock.Lock()
+	defer l.lock.Unlock()
 
 	// If there is no min or max for
 	// this list, then we can just add
@@ -132,6 +143,9 @@ func (l *List) Put(ver int64, val []byte) *Item {
 // if it existed. If it did not exist, a nil value is returned.
 func (l *List) Del(ver int64, meth Find) *Item {
 
+	l.lock.Lock()
+	defer l.lock.Unlock()
+
 	i := l.find(ver, meth)
 
 	if i != nil {
@@ -165,6 +179,9 @@ func (l *List) Del(ver int64, meth Find) *Item {
 // version, returning the latest version, or a nil value if not found.
 func (l *List) Exp(ver int64, meth Find) *Item {
 
+	l.lock.Lock()
+	defer l.lock.Unlock()
+
 	i := l.find(ver, meth)
 
 	if i != nil {
@@ -188,32 +205,57 @@ func (l *List) Exp(ver int64, meth Find) *Item {
 // Get gets a specific item from the list. If the exact item does not
 // exist in the list, then a nil value is returned.
 func (l *List) Get(ver int64, meth Find) *Item {
+
+	l.lock.RLock()
+	defer l.lock.RUnlock()
+
 	return l.find(ver, meth)
+
 }
 
 // Len returns the total number of items in the list.
 func (l *List) Len() int {
+
+	l.lock.RLock()
+	defer l.lock.RUnlock()
+
 	return l.size
+
 }
 
 // Min returns the first item in the list. In a time-series list this can be
 // used to get the initial version.
 func (l *List) Min() *Item {
+
+	l.lock.RLock()
+	defer l.lock.RUnlock()
+
 	return l.min
+
 }
 
 // Max returns the last item in the list. In a time-series list this can be
 // used to get the latest version.
 func (l *List) Max() *Item {
+
+	l.lock.RLock()
+	defer l.lock.RUnlock()
+
 	return l.max
+
 }
 
 // Walk iterates over the list starting at the first version, and continuing
 // until the walk function returns true.
 func (l *List) Walk(fn func(*Item) bool) {
+
+	l.lock.RLock()
+	defer l.lock.RUnlock()
+
 	for i := l.min; i != nil && !fn(i); i = i.next {
 		continue
 	}
+
 }
 
 // ---------------------------------------------------------------------------
