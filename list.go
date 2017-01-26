@@ -49,8 +49,8 @@ const (
 	Nearest
 )
 
-// NewList creates a new list
-func NewList() *List {
+// New creates a new list
+func New() *List {
 	return &List{}
 }
 

@@ -26,7 +26,7 @@ var i *Item
 
 func TestMain(t *testing.T) {
 
-	l = NewList()
+	l = New()
 
 	Convey("Get with nothing in list", t, func() {
 		So(l.Get(3, Exact), ShouldBeNil)
