@@ -78,6 +78,7 @@ func TestMain(t *testing.T) {
 	})
 
 	Convey("Can get list size", t, func() {
+		// So(len(l.))
 		So(l.Len(), ShouldEqual, 5)
 	})
 
@@ -118,19 +119,31 @@ func TestMain(t *testing.T) {
 	})
 
 	Convey("Can get upto item at 1", t, func() {
-		So(l.Get(1, Upto), ShouldEqual, l.Get(1, Exact))
+		i = l.Get(1, Upto)
+		So(i.Ver(), ShouldEqual, 1)
+		So(i.Val(), ShouldResemble, []byte{1})
+		So(i, ShouldEqual, l.Get(1, Exact))
 	})
 
 	Convey("Can get upto item at 3", t, func() {
-		So(l.Get(3, Upto), ShouldEqual, l.Get(3, Exact))
+		i = l.Get(3, Upto)
+		So(i.Ver(), ShouldEqual, 3)
+		So(i.Val(), ShouldResemble, []byte{3})
+		So(i, ShouldEqual, l.Get(3, Exact))
 	})
 
 	Convey("Can get upto item at 5", t, func() {
-		So(l.Get(5, Upto), ShouldEqual, l.Get(5, Exact))
+		i = l.Get(5, Upto)
+		So(i.Ver(), ShouldEqual, 5)
+		So(i.Val(), ShouldResemble, []byte{5})
+		So(i, ShouldEqual, l.Get(5, Exact))
 	})
 
 	Convey("Can get upto item at 7", t, func() {
-		So(l.Get(7, Upto), ShouldEqual, l.Get(5, Exact))
+		i = l.Get(7, Upto)
+		So(i.Ver(), ShouldEqual, 5)
+		So(i.Val(), ShouldResemble, []byte{5})
+		So(i, ShouldEqual, l.Get(5, Exact))
 	})
 
 	// ----------------------------------------
@@ -163,6 +176,11 @@ func TestMain(t *testing.T) {
 		So(i.Val(), ShouldResemble, []byte{1})
 	})
 
+	Convey("Can not get deleted item", t, func() {
+		i = l.Get(1, Exact)
+		So(i, ShouldBeNil)
+	})
+
 	Convey("Can get minimum item", t, func() {
 		i = l.Min()
 		So(i.Ver(), ShouldEqual, 2)
@@ -189,6 +207,11 @@ func TestMain(t *testing.T) {
 		i = l.Del(5, Exact)
 		So(i.Ver(), ShouldEqual, 5)
 		So(i.Val(), ShouldResemble, []byte{5})
+	})
+
+	Convey("Can not get deleted item", t, func() {
+		i = l.Get(5, Exact)
+		So(i, ShouldBeNil)
 	})
 
 	Convey("Can get minimum item", t, func() {
@@ -219,6 +242,11 @@ func TestMain(t *testing.T) {
 		So(i.Val(), ShouldResemble, []byte{3})
 	})
 
+	Convey("Can not get deleted item", t, func() {
+		i = l.Get(3, Exact)
+		So(i, ShouldBeNil)
+	})
+
 	Convey("Can get minimum item", t, func() {
 		i = l.Min()
 		So(i.Ver(), ShouldEqual, 2)
@@ -240,6 +268,88 @@ func TestMain(t *testing.T) {
 	// ----------------------------------------
 
 	Convey("------------------------------", t, nil)
+
+	Convey("Can delete 2nd item", t, func() {
+		i = l.Del(2, Exact)
+		So(i.Ver(), ShouldEqual, 2)
+		So(i.Val(), ShouldResemble, []byte{2})
+	})
+
+	Convey("Can not get deleted item", t, func() {
+		i = l.Get(2, Exact)
+		So(i, ShouldBeNil)
+	})
+
+	Convey("Can get minimum item", t, func() {
+		i = l.Min()
+		So(i.Ver(), ShouldEqual, 4)
+		So(i.Val(), ShouldResemble, []byte{4})
+	})
+
+	Convey("Can get maximum item", t, func() {
+		i = l.Max()
+		So(i.Ver(), ShouldEqual, 4)
+		So(i.Val(), ShouldResemble, []byte{4})
+	})
+
+	Convey("Can get list size", t, func() {
+		So(l.Len(), ShouldEqual, 1)
+	})
+
+	// ----------------------------------------
+	// ----------------------------------------
+	// ----------------------------------------
+
+	Convey("------------------------------", t, nil)
+
+	Convey("Can delete 4th item", t, func() {
+		i = l.Del(4, Exact)
+		So(i.Ver(), ShouldEqual, 4)
+		So(i.Val(), ShouldResemble, []byte{4})
+	})
+
+	Convey("Can not get deleted item", t, func() {
+		i = l.Get(4, Exact)
+		So(i, ShouldBeNil)
+	})
+
+	Convey("Can get minimum item", t, func() {
+		i = l.Min()
+		So(i, ShouldBeNil)
+	})
+
+	Convey("Can get maximum item", t, func() {
+		i = l.Max()
+		So(i, ShouldBeNil)
+	})
+
+	Convey("Can get list size", t, func() {
+		So(l.Len(), ShouldEqual, 0)
+	})
+
+	// ----------------------------------------
+	// ----------------------------------------
+	// ----------------------------------------
+
+	Convey("------------------------------", t, nil)
+
+	Convey("Can set 2nd item", t, func() {
+		l.Put(2, []byte{2})
+		i = l.Get(2, Exact)
+		So(l.Min(), ShouldEqual, l.Get(2, Exact))
+		So(l.Max(), ShouldEqual, l.Get(2, Exact))
+		So(i.Ver(), ShouldEqual, 2)
+		So(i.Val(), ShouldResemble, []byte{2})
+	})
+
+	Convey("Can set 4th item", t, func() {
+		l.Put(4, []byte{4})
+		i = l.Get(4, Exact)
+		So(l.Min(), ShouldEqual, l.Get(2, Exact))
+		So(l.Max(), ShouldEqual, l.Get(4, Exact))
+		So(i.Ver(), ShouldEqual, 4)
+		So(i.Val(), ShouldResemble, []byte{4})
+	})
 
 	Convey("Can replace 2nd item", t, func() {
 		l.Put(2, []byte{'R'})

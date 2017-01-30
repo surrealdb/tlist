@@ -163,6 +163,9 @@ func (l *List) Del(ver int64, meth Find) *Item {
 			i.next.prev = nil
 			l.min = i.next
 			i.next = nil
+		} else {
+			l.min = nil
+			l.max = nil
 		}
 
 		i.list = nil
