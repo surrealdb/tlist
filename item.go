@@ -55,8 +55,8 @@ func (i *Item) Del() *Item {
 			i.next.prev = nil
 			i.next = nil
 		} else {
-			l.min = nil
-			l.max = nil
+			i.list.min = nil
+			i.list.max = nil
 		}
 
 		i.list.size--
