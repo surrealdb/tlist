@@ -462,4 +462,16 @@ func TestMain(t *testing.T) {
 		So(l.Len(), ShouldEqual, 2)
 	})
 
+	Convey("Can self delete 2nd item", t, func() {
+		i = l.Get(2, Exact)
+		So(i.Del(), ShouldEqual, i)
+		So(l.Len(), ShouldEqual, 1)
+	})
+
+	Convey("Can self delete 4th item", t, func() {
+		i = l.Get(4, Exact)
+		So(i.Del(), ShouldEqual, i)
+		So(l.Len(), ShouldEqual, 0)
+	})
+
 }
