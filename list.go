@@ -285,16 +285,14 @@ func (l *List) find(ver int64, what Find) (i *Item) {
 
 	case Upto: // Get the item up to the specified version
 
-		if l.min.ver <= ver {
-			for i = l.min; i != nil && i.next != nil && i.ver < ver; i = i.next {
-				// Ignore
-			}
-			return i
+		for i = l.max; i != nil && i.ver > ver; i = i.prev {
+			// Ignore
 		}
+		return i
 
 	case Exact: // Get the exact specified version
 
-		for i = l.min; i != nil && i.ver <= ver; i = i.next {
+		for i = l.max; i != nil && i.ver >= ver; i = i.prev {
 			if i.ver == ver {
 				return i
 			}
@@ -302,8 +300,8 @@ func (l *List) find(ver int64, what Find) (i *Item) {
 
 	case Nearest: // Get the item nearest the specified version
 
-		for i = l.min; i != nil; i = i.next {
-			if i.ver == ver || i.next == nil || i.next.ver > ver {
+		for i = l.max; i != nil; i = i.prev {
+			if i.ver <= ver || i.prev == nil {
 				return i
 			}
 		}
