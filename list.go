@@ -261,6 +261,21 @@ func (l *List) Walk(fn func(*Item) bool) {
 
 }
 
+// Rng iterates over the list starting at the first version, and continuing
+// until the walk function returns true.
+func (l *List) Rng(beg, end int64, fn func(*Item) bool) {
+
+	l.lock.RLock()
+	defer l.lock.RUnlock()
+
+	for i := l.min; i != nil; i = i.next {
+		if i.ver >= beg && i.ver < end && fn(i) {
+			return
+		}
+	}
+
+}
+
 // ---------------------------------------------------------------------------
 
 func (l *List) find(ver int64, what Find) (i *Item) {
