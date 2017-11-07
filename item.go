@@ -16,7 +16,7 @@ package tlist
 
 // Item represents an item in a time-series list.
 type Item struct {
-	ver  int64
+	ver  uint64
 	val  interface{}
 	list *List
 	prev *Item
@@ -24,7 +24,7 @@ type Item struct {
 }
 
 // Ver returns the version of this item in the containing list.
-func (i *Item) Ver() int64 {
+func (i *Item) Ver() uint64 {
 	return i.ver
 }
 

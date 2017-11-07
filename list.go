@@ -141,7 +141,7 @@ func (l *List) Put(ver uint64, val interface{}) *Item {
 
 // Del deletes a specific item from the list, returning the previous item
 // if it existed. If it did not exist, a nil value is returned.
-func (l *List) Del(ver int64, meth Find) *Item {
+func (l *List) Del(ver uint64, meth Find) *Item {
 
 	l.lock.Lock()
 	defer l.lock.Unlock()
@@ -180,7 +180,7 @@ func (l *List) Del(ver int64, meth Find) *Item {
 
 // Exp expunges all items in the list, upto and including the specified
 // version, returning the latest version, or a nil value if not found.
-func (l *List) Exp(ver int64, meth Find) *Item {
+func (l *List) Exp(ver uint64, meth Find) *Item {
 
 	l.lock.Lock()
 	defer l.lock.Unlock()
@@ -207,7 +207,7 @@ func (l *List) Exp(ver int64, meth Find) *Item {
 
 // Get gets a specific item from the list. If the exact item does not
 // exist in the list, then a nil value is returned.
-func (l *List) Get(ver int64, meth Find) *Item {
+func (l *List) Get(ver uint64, meth Find) *Item {
 
 	l.lock.RLock()
 	defer l.lock.RUnlock()
@@ -263,7 +263,7 @@ func (l *List) Walk(fn func(*Item) bool) {
 
 // Rng iterates over the list starting at the first version, and continuing
 // until the walk function returns true.
-func (l *List) Rng(beg, end int64, fn func(*Item) bool) {
+func (l *List) Rng(beg, end uint64, fn func(*Item) bool) {
 
 	l.lock.RLock()
 	defer l.lock.RUnlock()
@@ -278,7 +278,7 @@ func (l *List) Rng(beg, end int64, fn func(*Item) bool) {
 
 // ---------------------------------------------------------------------------
 
-func (l *List) find(ver int64, what Find) (i *Item) {
+func (l *List) find(ver uint64, what Find) (i *Item) {
 
 	if l.min == nil && l.max == nil {
 		return nil
