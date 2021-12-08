@@ -2,7 +2,7 @@
 
 Tlist is an in-memory time series list package for Golang.
 
-[![](https://img.shields.io/circleci/token/2dc3aeee87f95b35fb9229f88dce56f01e6b4159/project/abcum/tlist/master.svg?style=flat-square)](https://circleci.com/gh/abcum/tlist) [![](https://img.shields.io/badge/status-1.0.0-ff00bb.svg?style=flat-square)](https://github.com/abcum/tlist) [![](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/abcum/tlist) [![](https://goreportcard.com/badge/github.com/abcum/tlist?style=flat-square)](https://goreportcard.com/report/github.com/abcum/tlist) [![](https://img.shields.io/badge/license-Apache_License_2.0-00bfff.svg?style=flat-square)](https://github.com/abcum/tlist) 
+[![](https://img.shields.io/badge/status-1.0.0-ff00bb.svg?style=flat-square)](https://github.com/surrealdb/tlist) [![](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/surrealdb/tlist) [![](https://goreportcard.com/badge/github.com/surrealdb/tlist?style=flat-square)](https://goreportcard.com/report/github.com/surrealdb/tlist) [![](https://img.shields.io/badge/license-Apache_License_2.0-00bfff.svg?style=flat-square)](https://github.com/surrealdb/tlist) 
 
 #### Features
 
@@ -19,5 +19,5 @@ Tlist is an in-memory time series list package for Golang.
 #### Installation
 
 ```bash
-go get github.com/abcum/tlist
+go get github.com/surrealdb/tlist
 ```
